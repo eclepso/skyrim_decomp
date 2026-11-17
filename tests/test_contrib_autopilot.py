@@ -997,6 +997,21 @@ class RuntimeEffects(unittest.TestCase):
             self.assertEqual(self.runtime.functions(dict(tree=str(self.root), files=[dict(path=cpp)])),
                              {cpp: [0x1000, 0x2000, 0x3000]})
 
+    def test_header_rva_accepted_in_another_unit_is_not_a_regression_target(self):
+        cpp = 'reconstruction/synth/Synth.cpp'
+        unit = self.root / cpp
+        unit.parent.mkdir(parents=True)
+        unit.write_text('// RVA 0x1000; RVA 0x2000; RVA 0x3000.\nint Synthetic() { return 0; }\n')
+        for name, compiled in (('0x2000', cpp), ('0x3000', 'reconstruction/synth_other/Synth.cpp')):
+            ap.save_json(self.root / 'reports' / (name + '.json'), dict(source=dict(compiled=compiled, translation_unit=[compiled])))
+        ap.save_json(self.root / 'data/progress.json', dict(target_build_id='synthetic', functions=[
+            dict(build_id='synthetic', rva=0x1000, status='mapped'),
+            dict(build_id='synthetic', rva=0x2000, status='matched', report='reports/0x2000.json'),
+            dict(build_id='synthetic', rva=0x3000, status='matched', report='reports/0x3000.json')]))
+        with patch.object(ap, 'screen_tree', return_value=[]):
+            self.assertEqual(self.runtime.functions(dict(tree=str(self.root), files=[dict(path=cpp)])),
+                             {cpp: [0x1000, 0x2000]})
+
     def test_finish_accounts_for_preintegration_failures_and_missing_members(self):
         rev = self.state.revision(pr())
         rev['completed']['functions'] = {'synthetic.cpp': [0x1000, 0x2000, 0x3000]}
