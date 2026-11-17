@@ -1152,6 +1152,27 @@ class RuntimeEffects(unittest.TestCase):
         self.assertEqual(output.read_text(), 'SAFE\nsynthetic\n')
         self.assertEqual(self.state.data['days'][self.state.today]['reviews'], 1)
 
+    def test_model_response_path_has_no_symlink_when_output_is_in_a_symlinked_store(self):
+        store = self.root / 'shared-store'
+        store.mkdir()
+        tree = self.root / 'tree'
+        tree.mkdir()
+        (tree / 'reviews').symlink_to(store, target_is_directory=True)
+        output = tree / 'reviews' / 'review.md'
+        seen = []
+        def command(argv, **kwargs):
+            response = Path(argv[argv.index('--output-last-message') + 1])
+            seen.append(response)
+            # codex refuses any path containing a symlink component.
+            self.assertEqual(os.path.realpath(response.parent), str(response.parent))
+            response.write_text('APPROVE\nsynthetic\n')
+            return subprocess.CompletedProcess(argv, 0, b'', b'')
+        with patch.object(self.runtime, 'command', side_effect=command):
+            value = self.runtime.model(tree, 'gpt-6.1-sol', 'synthetic', output)
+        self.assertEqual(value, 'APPROVE\nsynthetic\n')
+        self.assertEqual((store / 'review.md').read_text(), value)
+        self.assertFalse(seen[0].exists())
+
     def test_all_dropped_receipt_is_terminal_and_not_a_fake_acceptance(self):
         tree = self.root / 'tree'
         fdir = self.runtime.fdir
