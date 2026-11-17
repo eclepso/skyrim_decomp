@@ -1,0 +1,105 @@
+name: PR check
+# Runs the untrusted compile under pull_request (read-only token, no secrets). A fork can edit this
+# file, so a green result is advisory until the bot re-verifies scope through the GitHub API.
+on:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: pr-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Trusted tools come from the base revision; the PR head is only read as data.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Fetch PR head
+        env:
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: git fetch --no-tags origin "$PR_HEAD"
+      - name: Only reconstruction/ may change
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # Paths are attacker-controlled, so only a count is printed.
+          outside=$(git diff --no-renames --name-only -z "$BASE_SHA...$PR_HEAD" | tr '\0' '\n' | grep -vc '^reconstruction/' || true)
+          if [ "$outside" != "0" ]; then
+            echo "::error::scope: $outside changed path(s) are outside reconstruction/; a function PR may change only reconstruction/**"
+            exit 1
+          fi
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+      - name: Leak grep and include allowlist on added lines
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: python tools/leakgrep.py --base "$BASE_SHA" --head "$PR_HEAD"
+  hash:
+    runs-on: windows-2022
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.13'
+      # Changed units plus matched units whose include closure holds a changed header (the header rule).
+      - name: Read PR source blobs
+        id: prepare
+        shell: pwsh
+        env:
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --no-tags origin $env:PR_HEAD
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/ci_target_hash_check.py prepare --base "$env:BASE_SHA" --head "$env:PR_HEAD" --work "$env:RUNNER_TEMP/target-hash" --out "$env:RUNNER_TEMP/intake.json"
+      - name: Compute trusted full-manifest cache key
+        if: steps.prepare.outputs.mode == 'check'
+        id: key
+        shell: pwsh
+        run: python tools/ci_toolchain.py key --root "$env:RUNNER_TEMP/msvc-v141"
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        if: steps.prepare.outputs.mode == 'check'
+        id: cache
+        with:
+          path: ${{ runner.temp }}/msvc-v141
+          key: ${{ steps.key.outputs.cache_key }}
+      - name: Verify every restored file or fetch verified Microsoft packages
+        if: steps.prepare.outputs.mode == 'check'
+        id: setup
+        shell: pwsh
+        env:
+          SETUP_STARTED: ${{ steps.key.outputs.started }}
+        run: python tools/ci_toolchain.py setup --root "$env:RUNNER_TEMP/msvc-v141" --started "$env:SETUP_STARTED"
+      - name: Compile at base and head; block only on regressions
+        if: steps.prepare.outputs.mode == 'check'
+        shell: pwsh
+        env:
+          MSVC_BIN: ${{ steps.setup.outputs.bin }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          python tools/ci_hash_check.py probe --bin "$env:MSVC_BIN" --out "$env:RUNNER_TEMP/probe.json"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/ci_target_hash_check.py regress --base "$env:BASE_SHA" --head "$env:PR_HEAD" --bin "$env:MSVC_BIN" --work "$env:RUNNER_TEMP/target-hash" --out "$env:RUNNER_TEMP/target-result.json" --map-out "$env:RUNNER_TEMP/hash-result.json"
+      # Statuses and fixed reason codes only: no compiler diagnostics, objects or game bytes.
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always() && steps.prepare.outputs.mode == 'check'
+        with:
+          name: hash-result
+          path: |
+            ${{ runner.temp }}/hash-result.json
+            ${{ runner.temp }}/target-result.json
+          if-no-files-found: ignore

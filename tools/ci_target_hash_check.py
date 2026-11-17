@@ -194,12 +194,46 @@ def sample(root, bindir, work, manifest):
             for row, other in zip(first, second)]
 
 
+def classify(head_rows, base_rows):
+    """Label each head row against the same unit/RVA compiled from the base tree.
+
+    Only `regressed` (hash-match at base, no match at head) may block; debt that already failed
+    at base and functions that are new in the PR are reported, not enforced.
+    """
+    base = {(r['unit'], r['rva']): r['result'] for r in base_rows}
+    rows = []
+    for row in head_rows:
+        before = base.get((row['unit'], row['rva']))
+        if row['result'] == 'hash-match':
+            status = 'pass'
+        elif row['result'] == 'no-target':
+            status = 'unverified'
+        elif before == 'hash-match':
+            status = 'regressed'
+        elif before == 'mismatch':
+            status = 'preexisting-fail'
+        else:
+            status = 'fail'
+        rows.append(dict(row, status=status, base=before))
+    return rows
+
+
+def regress(root, tree, refs, bindir, work, manifest):
+    head = compile_requests(root, tree, refs, bindir, work / 'head', manifest)
+    # Units absent from the base tree are new; compiling them there would only add noise.
+    old = [r for r in refs if (root / r['unit']).is_file()]
+    base = compile_requests(root, root, old, bindir, work / 'base', manifest) if old else []
+    return classify(head, base)
+
+
 def summary_text(report):
     lines = ['Advisory target hash results; acceptance not evaluated. The current acceptance rule',
              'still requires its independent hosts and Reviewer. Hash equality omits reference identity.',
              '', '| Function RVA | Unit | Result |', '| --- | --- | --- |']
     for row in report.get('functions', []):
         result = {'hash-match': 'PASS (hash only)', 'mismatch': 'FAIL', 'no-target': 'UNVERIFIED'}.get(row['result'], 'ERROR')
+        if row.get('status'):
+            result = row['status'].upper()
         lines.append(f'| {row["rva"] or "unbound"} | {row["unit"]} | {result} |')
     if report.get('error'):
         lines += ['', 'Check could not complete: ' + report['error'] + '. No strike.']
@@ -208,12 +242,13 @@ def summary_text(report):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('command', choices=('prepare', 'check', 'sample'))
+    p.add_argument('command', choices=('prepare', 'check', 'regress', 'sample'))
     p.add_argument('--base')
     p.add_argument('--head')
     p.add_argument('--bin', type=Path)
     p.add_argument('--work', type=Path, required=True)
     p.add_argument('--out', type=Path, required=True)
+    p.add_argument('--map-out', type=Path, help='regress: write {rva-or-unit: status} for the PR bot')
     a = p.parse_args(argv)
     report = dict(schema=1, kind='target-hash-check', head_sha=a.head,
                   base_sha=a.base, normalization_version=hashes.VERSION, acceptance='not-evaluated')
@@ -236,6 +271,13 @@ def main(argv=None):
             report['toolset'] = 'MATCH'
             if a.command == 'sample':
                 report['functions'] = sample(ROOT, a.bin, a.work, manifest)
+            elif a.command == 'regress':
+                refs = json.loads((a.work / 'requests.json').read_text())
+                report['functions'] = regress(ROOT, a.work / 'source', refs, a.bin, a.work / 'objects', manifest)
+                if a.map_out:
+                    a.map_out.parent.mkdir(parents=True, exist_ok=True)
+                    a.map_out.write_text(json.dumps({r['rva'] or r['unit']: r['status'] for r in report['functions']},
+                                                    indent=2, sort_keys=True) + '\n')
             else:
                 refs = json.loads((a.work / 'requests.json').read_text())
                 report['functions'] = compile_requests(ROOT, a.work / 'source', refs, a.bin,
@@ -249,6 +291,8 @@ def main(argv=None):
     if os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
             summary.write(summary_text(report))
+    if a.command == 'regress':
+        return int('error' in report or any(r['status'] == 'regressed' for r in report.get('functions', [])))
     return int('error' in report or any(r['result'] == 'mismatch' for r in report.get('functions', []))
                or (a.command == 'sample' and any(not r['deterministic'] for r in report['functions'])))
 
