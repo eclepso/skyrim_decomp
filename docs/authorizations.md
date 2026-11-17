@@ -179,3 +179,31 @@ for this explicit CI-hash pair. Outside-contributor intake stays Mac Wine plus C
 Internal functions require one independent admitted review; only the gate's frozen sampled
 subset requires the second/safeguard review and clean re-run. Existing sampling draws, first-20
 triggers, pins, exact hashes, validator, screen, lint and publication guards remain mandatory.
+
+### Radical simplification of acceptance
+
+Grantor: awarebayes (human maintainer), 2026-11-18, given to the orchestrator and recorded by an
+Engineer. Verbatim: "Please land radical simplification and fast". Earlier statements in the same
+discussion, verbatim excerpts: "95% of this bullshit can be simplified ... I want like something
+radical."; "can the AI just click the fucking merge button"; "Why is review not the 1st step"; and
+on leak screening, "unless you can provide me like a plausible fucking threat model ... does not
+count." The orchestrator supplied the threat model recorded in `docs/threat-model.md`.
+
+Scope: a function is `matched` on a byte match on two hosts (host 1, the GitHub Windows CI-hash
+job; host 2, the Mac Wine or PC comparator) plus one review by an admitted model (Terra under
+`claude-low`, otherwise Opus), as written in `docs/verification.md`. A pull request touching only
+`reconstruction/**` is checked and, when it passes, squash-merged by a bot with a bot-written
+message. Review groups, the sampling second pass, from-scratch reruns and the lane's requirements
+are no longer part of the rule.
+
+Limits:
+- The sampling second review is dropped on Terra calibration evidence (0 missed rejects in 67
+  shared functions, recorded above). The calibration was one wave, one revision and mostly small
+  functions. The residual risk is a missed plausibility finding, not a false byte match.
+- Two hosts stay mandatory even when that means waiting: if the Mac and the PC are both down, PRs
+  wait. The match floor, the comparator, the validator and exact-head-SHA merging are unchanged.
+- A shared header changed by a PR still triggers a CI recompile of the matched functions that
+  include it; a regression blocks the PR.
+- Leak screening is a deterministic grep over added lines plus the single review; a model cannot
+  override a grep hit. Only the maintainer's `leakgrep-override` label does.
+- No exposure scope changes: this note grants no new model access to game-derived material.

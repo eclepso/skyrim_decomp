@@ -5,9 +5,15 @@
 Read the common publication and evidence rules below. Internal runners, queues and role briefs
 are not prerequisites for drafting or submitting a function.
 
+**Flow for everyone:** open a PR touching only `reconstruction/**`; checks run (scope and leak scan,
+Windows CI-hash compile); the bot compares on a second host, makes one review and squash-merges.
+A function is `matched` on a byte match on two hosts plus one admitted review
+([docs/verification.md](docs/verification.md), [docs/threat-model.md](docs/threat-model.md)).
+
 **Internal project worker:** also read [the internal agent workflow](docs/internal-agent-workflow.md)
-before operating shared queues, verifier hosts or publication. It preserves the role, gate,
-review, staged-check, tooling-push and exact-SHA CI requirements.
+before operating verifier hosts or publication. It preserves the role, gate, staged-check,
+tooling-push and exact-SHA CI requirements. Its lane, queue, review-group and claims sections are
+superseded and pending deletion.
 
 Read `LEGAL.md`, `PROVENANCE.md` and `docs/clean-room.md` before research or publication.
 [The full acceptance specification](docs/verification.md) remains authoritative; the contributor
@@ -49,7 +55,7 @@ independent of Mudcrab; never apply another checkout's build/cache instructions 
   Label inferred names as guesses. Preserve unknowns rather than filling them plausibly.
 - Byte match, semantic equivalence, inferred behavior and layout-size agreement are different claims.
 - Mark a function `matched` only under the implemented matching gate and acceptance rule in
-  `docs/verification.md`: reproduced comparator pass, Reviewer
+  `docs/verification.md`: byte match on two hosts plus one Reviewer
   approval, integration. Bootstrap CI checks only publication hygiene, metadata and site
   generation; it does NOT compare against the game. The separate CI-hash job (docs/verification.md, "CI hash check as the second host") does compare compiled functions against published target hashes and counts as the second verifier host.
 - Progress comes only from `data/progress.json`; totals are derived, not manually entered into HTML.

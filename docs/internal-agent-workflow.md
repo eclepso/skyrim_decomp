@@ -4,6 +4,21 @@ For project workers operating the shared research/acceptance pipeline. External 
 [the contributor guide](contributing-agent.md). The common rules in [AGENTS.md](../AGENTS.md)
 apply here too. No authorization gate or acceptance requirement is changed by this split.
 
+## Current flow
+
+Function work goes through a pull request. A Drafter or generator works in a plain git worktree
+on a branch, touches only `reconstruction/**` and opens a PR (`gh pr create`). `pr-check.yml`
+runs the scope and leak scan and the Windows CI-hash job (host 1); the PR bot compares on the Mac
+or PC (host 2), makes one review call with an admitted model and squash-merges with
+`--match-head-commit`, then records the rows. The acceptance rule is the summary at the top of
+"Acceptance rule" in `docs/verification.md`; the threat model is `docs/threat-model.md`. An open
+draft PR is the claim. Tooling PRs (`tools/**`, `tests/**`) take the normal route: branch CI green,
+then merge.
+
+**Superseded, pending deletion.** The sections below on claims, the lane and lane-run, the
+Drafter and Reviewer queue, review groups, families and the sampling second pass describe the
+old pipeline. They are marked and stay only until the deletion phase removes them.
+
 ## First read
 
 Agents also follow `docs/anti-eu-bureaucracy.md`: ship in bulk, decide rather than stop, and add no ceremony beyond named rules.
@@ -15,7 +30,7 @@ Cargo/build/cache instructions here or modify its checkout as part of a research
 
 ## Work safely and leave a usable handoff
 
-- Claim a small issue before a long task. Record human owner, agent/model if used, exact build,
+- [Superseded, pending deletion: claims; an open draft PR is the claim now.] Claim a small issue before a long task. Record human owner, agent/model if used, exact build,
   reproduction command, outcome, blockers and next step. Launch agents only as described in
   "Multi-agent execution" below, or when the human maintainer asks.
 - Apply small outside-PR fixes directly with a cheap-model worker when **Allow edits by
@@ -31,16 +46,16 @@ Cargo/build/cache instructions here or modify its checkout as part of a research
   `SR_PUBLICATION_FORBIDDEN_CONFIG` selects an explicit policy for isolated publication runs.
 - No broad staging: inspect `git diff`, then stage named files. Run `python3 tools/check.py --staged`
   immediately before committing. Never bypass a guard to ship suspect material.
-- Review all staged text for provenance and secrets. The lane runs the required publication
+- [Superseded, pending deletion: the lane.] Review all staged text for provenance and secrets. The lane runs the required publication
   checks, test suite and site build; function-only runs use the documented local suite
   exemption and the complete suite in CI. Do not duplicate the lane's checks before enqueueing. The
   integrating Engineer, or the orchestrator when run with a shell, then commits and pushes; there
   is no per-commit maintainer review.
-- Tooling publications use `python3 tools/flow.py tooling-push` with the shared flow directory.
+- [Superseded, pending deletion: the lane lock.] Tooling publications use `python3 tools/flow.py tooling-push` with the shared flow directory.
   It takes the acceptance lane lock and runs the full checks, push and exact-SHA CI; do not
   duplicate those full checks before invoking it. Stage named files and run the staged guard
   immediately before the tooling commit as above.
-- The lane waits for exact-SHA CI and records it in its finished receipt. Record that commit
+- [Superseded, pending deletion: the lane receipt.] The lane waits for exact-SHA CI and records it in its finished receipt. Record that commit
   and CI result in the handoff before reporting the work as done; do not repeat a successful
   lane CI wait. For a publication outside the lane, use
   `python3 tools/ci_status.py --commit <full sha> --wait 600`. A red `main` is fixed, or its cause reported to the maintainer,
@@ -56,6 +71,8 @@ machines deciding results. Nothing in this section grants an authorization; ever
 must be recorded in `docs/authorizations.md` by the human maintainer before work that needs it.
 
 ### Roles
+
+The queue, claim and review-group duties in this table are superseded, pending deletion.
 
 | role | who | does | never does |
 |---|---|---|---|
@@ -143,6 +160,9 @@ and saved acceptance evidence. Use the contributor guide for new contributors an
 `docs/orchestrator-runbook.md` for public pipeline operations. No historical plan grants a gate.
 
 ### Fan-out design (phase 4)
+
+Superseded, pending deletion: the queue, the review groups, the family sampling, the second-Reviewer
+safeguard and the lane below are replaced by the current flow above.
 
 - **Queue**: the orchestrator picks functions from a reviewed inventory slice, each identified by
   `(build id, RVA, size)`. One task = one function; a worker claims it by task id.

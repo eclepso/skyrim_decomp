@@ -36,6 +36,15 @@ A reconstruction is not a match.
 
 ## Acceptance rule
 
+**Summary.** A function is `matched` when it has a byte match on two hosts plus one review by an
+admitted model. Host 1 is the GitHub Windows CI-hash job (see "CI hash check as the second
+host"); host 2 is the Mac Wine or PC comparator. The review is one `approve` from Terra under
+`claude-low` or from Opus. If a host is down the PR waits; two hosts are never waived. The match
+floor below is unchanged. A pull request touching only `reconstruction/**` is checked, reviewed
+and merged by the bot; a function that fails any part stays `drafted` and gets no record. When a PR
+changes a header, every matched function whose include closure contains it is recompiled on CI:
+`pass` keeps it matched (its record is rebound to the new digest), a regression blocks the PR.
+
 Acceptance of a function as `matched` is automated. The maintainer decided that individual
 functions are not hand-reviewed at this target's scale; do not ask the maintainer to review or
 accept individual functions or batches. Acceptance has two tiers (maintainer decision,
@@ -59,8 +68,7 @@ A function is accepted only when ALL of these hold:
    and entry offset; it resolves uniquely in that object. The entry must be at offset zero of
    a complete independently delimited code section, with no absorbed procedure. Full-range,
    unwind/EH and funclet coverage, exact per-member references, alias/fold protections, both
-   verifier hosts, source/recipe/validator checks and the existing individual or family review
-   requirements all remain mandatory. Other internal function kinds or layouts are not admitted.
+   verifier hosts, source/recipe/validator checks and the review all remain mandatory. Other internal function kinds or layouts are not admitted.
 2. **Automated hygiene**, enforced by tools, not by a Reviewer:
    - Tracked files are limited to 1 MiB, except the generated `data/progress.json`,
      `reconstruction/INDEX.md`, `reports/<build id>/symbol-map.json`, its
@@ -88,8 +96,7 @@ A function is accepted only when ALL of these hold:
      introduced only for matching, or a justification comment that is not a programmer's reason.
 3. **Reviewer approval.** A Reviewer (`docs/reviewer-runbook.md`; in Claude Code the
    `.claude/agents/reviewer.md` subagent) of an admitted class, started with fresh context, which
-   did not draft, engineer or triage that function, returns `approve` for it (or supplies the family approval
-   and member reviews under "Family reviews" below),
+   did not draft, engineer or triage that function, returns `approve` for it,
    for the current source or, under "Label-only re-acceptance" below, for an earlier source whose
    compiled code section is identical. The Reviewer is a necessary sanity and provenance check,
    not match evidence: it can only veto or approve, cannot substitute for item 1, and cannot edit
@@ -134,20 +141,15 @@ A function is accepted only when ALL of these hold:
    Reviewer-checked rule change.
 
    The Sol class as the strong Reviewer is admitted only as `gpt-6.1-sol` under `claude-low`
-   for any review. Terra is the default first Reviewer. For the strong duties (sampling second
-   passes, confirmation of a non-Opus `escalate` before the maintainer, and reviews of comparator,
-   validator, verifier or acceptance-rule changes) the tools admit Sol or Opus, never Terra, and
-   require a different model from the first review. Unlike Terra,
+   for any review. Terra is the default Reviewer. For the strong duties (confirmation of a
+   non-Opus `escalate` before the maintainer, and reviews of comparator, validator, verifier or
+   acceptance-rule changes) the tools admit Sol or Opus, never Terra. Unlike Terra,
    Sol was admitted by maintainer decision WITHOUT a calibration:
    "sol is goood enough dont waste time" (`docs/authorizations.md`, Notes). Sol may give a fresh
-   function review when confirming an escalation. Under `claude-low`, every second pass must use a different model from the first review (Opus
-   aliases count as one model); if the first review was Sol, use an independent Opus Reviewer.
-   Outside `claude-low`, Opus remains required for these strong review duties and the existing
-   sampling policy is unchanged. Reviewer independence is per run: use fresh context, never the
+   function review when confirming an escalation. Outside `claude-low`, Opus remains required for these strong review duties. Reviewer independence is per run: use fresh context, never the
    run that drafted, engineered, triaged or first-reviewed the function, including machinery
    and rule changes. A non-Opus `reject` needs no confirmation.
-   A new Reviewer model or class counts as a new Reviewer version for sampling. The acceptance
-   and flow tools refuse models not admitted for the profile in use.
+   The acceptance tools refuse models not admitted for the profile in use.
 
    Verdicts are `approve`, `reject` (on a blocking ground, back to the Drafter or Engineer with
    reasons) or `escalate` (with a category: `provenance`, `legal`, `systemic` or `other`). The
@@ -192,25 +194,12 @@ accepted functions by `--refresh-named`. Functions accepted before this rule hav
 Open naming findings are closed by a Reviewer: a later full or delta review that lists none.
 Label fixes themselves do not need one: see "Label-only re-acceptance".
 
-**Sampling safeguard.** Internal work requires one independent admitted review per function.
-Only functions in the gate's frozen sampled subset require a second/safeguard review and
-clean comparator re-run; unrelated sampled members do not block an unsampled approved selection.
-Internal subsets inherit their parent's frozen draw without drawing another safeguard sample.
-The parent sample draw and first-20 triggers below remain unchanged; outside-contributor
-subset sampling is unchanged. Maintainer directive, 2026-11-17.
-
-At least 5% of individually reviewed accepted functions (including reviewed
-family members), chosen at random by the orchestrator,
-plus the first 20 accepted functions under every new recipe or compiler, every new Drafter prompt
-version, every new Reviewer prompt version (`.claude/agents/reviewer.md`, `docs/reviewer-runbook.md`)
-or Reviewer model, and every new version of
-the acceptance rule (this section and `tools/accept_function.py`), and the first 20 label-only
-re-acceptances under each acceptance-rule version, get a second independent Reviewer pass (fresh context, a different
-Reviewer run, Opus class outside `claude-low`; under `claude-low`, an admitted strong Reviewer
-using a different model from the first review) and a from-scratch comparator re-run on a clean
-checkout. Any disagreement, with
-either Reviewer or with the earlier comparator result, pauses acceptance for that batch and is
-escalated to the maintainer.
+**No sampling second pass.** One admitted review per function is the whole review requirement.
+There is no random second review, no first-N trigger per Reviewer or rule version and no
+from-scratch rerun. The maintainer dropped it (`docs/authorizations.md`, Notes) on Terra
+calibration evidence: 0 missed rejects in 67 shared functions. The residual risk is a missed
+plausibility finding, never a false byte match, because only the two-host comparison counts as
+match evidence.
 
 **Maintainer role.** The maintainer grants and edits gates in `docs/authorizations.md`, sets
 budgets, decides licence and policy questions, and receives escalations and periodic summary
@@ -233,51 +222,14 @@ a separate strong Reviewer pass on that change (Sol under `claude-low`, Opus oth
 independent of the Engineer), and are listed in the maintainer's summary report; they
 are not blocked waiting for the maintainer, except changes to this rule itself, which escalate.
 
-### Family reviews
+### Families
 
-This rule is in force by maintainer decision; the separate Reviewer pass on this rule change was waived by the maintainer (see `docs/authorizations.md`).
-
-A family identifies one generator or stamping template by version and template digest, bound to
-the target build, recipe, compiler and comparator version. A change to any of these starts a new
-family. Each member records its parameter row and target binding. Every member independently
-passes the unchanged comparator on two independent approved hosts with different OS loaders,
-against the integrated source and pinned recipe. All comparator, validator, provenance and
-publication checks remain in force.
-
-A fresh admitted Reviewer reviews the generator or template, parameter extraction and binding,
-and the first 20 members. For every subsequent batch, record the seed and complete population
-before selection, then draw a reproducible random sample of the greater of 20 or 5% of members,
-rounding up; review all members if there are fewer than 20. The seed, complete population and
-member bindings are committed before drawing, and the deterministic draw is committed before any
-member is accepted. Review individually every member with parameters outside the reviewed ranges.
-The existing sampling safeguard, including a second Opus
-pass and a from-scratch comparator re-run for the first 20 per new Reviewer or rule version and at
-least 5% random, applies to reviewed members with all its existing triggers. An unsampled member may
-rely on the family only when its origin version and digest match a saved approving family review
-under `.local/reviews/` by an admitted model, the family is active, and its parameters are in the
-reviewed ranges. Every sampled member needs its own approval before the remaining batch is
-accepted. Other functions retain the per-function rule. The sanitized member record names and
-hashes the family review, family manifest and committed batch it relies on.
-
-A comparator pass proves no name. Each function records its name source as a public symbol source
-or a labelled guess, with its confidence. A family review does not substitute for the existing
-provenance and publication requirements.
-
-Pause the family on a Reviewer rejection of a sampled member, wrong parameter or target binding,
-non-reproduction, provenance doubt, Reviewer disagreement or another material defect. Quarantine
-affected members and assess the entire affected population. If a family is invalidated, revoke
-any accepted member whose supporting evidence is invalidated; do not silently retain it. Correct
-the cause and repeat the required comparisons and reviews before re-acceptance; escalate policy or
-provenance uncertainty to the maintainer before resuming. A pause freezes new acceptance; it does
-not silently revoke or endorse existing members. Revocation of invalidated evidence is explicit
-and recorded under "Audit and revocation" above. Correct the cause and use a freshly reviewed
-family version before resuming.
-
-Family metadata, review format and commands are in `docs/reviewer-runbook.md` and
-`docs/orchestrator-runbook.md`. `tools/family_review.py`, `tools/accept_function.py` and
-`tools/flow.py` enforce the exemption; `tests/test_family_review.py` exercises it on synthetic
-comparator reports. A schema 4 member approval is a family approval, never an individual review,
-and cannot be carried forward by `--label-only`.
+A family is one generator or stamping template, identified by version and template digest and
+bound to the target build, recipe, compiler and comparator version. Every member passes the
+unchanged comparator on both hosts. The one review of the PR covers the template, its parameter
+extraction and binding, and a sample of members; members outside the reviewed parameter ranges
+are reviewed individually. A comparator pass proves no name. A family has no separate gate,
+group record or second pass.
 
 ## Match gate
 
@@ -436,12 +388,9 @@ Match record, recomputed from the tree:
   second run checks. It shares the toolchain install and image, so it does not check those
   against an independent copy: the record labels such a pair with a note line starting
   `independence: fork` (otherwise `independence: separate-machine`, or
-  `independence: third-party` for a host run by someone else). At least one accepted function
-  per batch, or per day of acceptances if that is sooner, is also re-run on a machine that is not
-  a fork of the compile hosts (a separately provisioned machine from the pinned recipe, or the
-  macOS host for the comparison), and that re-check is recorded in the batch's handoff and in
-  the summary report. An optional third-party host may be added later. The gate does not read the
-  `independence` label yet; it is policy, checked by the sampling safeguard. Host names are
+  `independence: third-party` for a host run by someone else).
+  An optional third-party host may be added later. The gate does not read the
+  `independence` label yet; it is policy. Host names are
   self-reported labels: the gate cannot verify which machine produced a run. As a tripwire
   against one report copied under two labels, runs from different compile hosts must name
   different candidate object hashes (two clean compiles differ in time stamp and path records,
@@ -598,11 +547,10 @@ above (previous digest a SHA-256 other than the current, code-section hashes pre
 the match record's), previous review hash equal to the review hash, and the naming-findings
 filter. Items 4 and 5 compare against the superseded record or git history, which the validator
 does not read; as for delta records, a hand-written record claiming them is caught only by git
-history and the sampling safeguard. What this gives up: a Reviewer no longer reads a source change
+history. What this gives up: a Reviewer no longer reads a source change
 that leaves the function's compiled code identical, so a rewrite of the function's own text into
 something a Reviewer would reject (pasted decompiler output that compiles to the same code) is
-not re-checked until the next full review or the sampling safeguard, which samples label-only
-acceptances like any other. Nor is any other unit text on this path: comments, labels, other
+not re-checked until the next full review. Nor is any other unit text on this path: comments, labels, other
 functions' bodies and added code are published without a Reviewer reading them, until a later
 review of some function of that unit. This is not a new publication channel, since unaccepted
 drafts are committed unreviewed too, but no Reviewer has vouched for that text.
@@ -721,12 +669,11 @@ recipe, pins, reports, Reviewer record). Host identity in the runs and the whole
 are self-reported by whoever wrote them; nothing in the tree authenticates them. The gate
 therefore cannot show that a comparison against the game took place, that it ran on the hosts
 named, or that a Reviewer read the source. Those rest on the runs and the review being real. The
-safeguards for that are the sampling safeguard above (a second independent Reviewer pass and a
-from-scratch comparator re-run for a sample of accepted functions) and git history as the audit
-trail, not the validator. Likewise no tool can tell a naming finding from a misfiled blocking
+safeguards for that are the second host, which reproduces the comparison independently, and git
+history as the audit trail, not the validator. Likewise no tool can tell a naming finding from a misfiled blocking
 ground: an `approve` that lists, say, "the body is pasted decompiler output" under
-`naming_findings` passes every mechanical check and is accepted. Only the sampling safeguard's
-second Reviewer pass can catch that misclassification.
+`naming_findings` passes every mechanical check and is accepted. This residual risk is accepted
+(see "No sampling second pass").
 
 Public CI cannot prove a match without private game inputs. It should check report/source
 consistency, not represent that check as an independent comparison to Skyrim. Once an authorized
@@ -755,7 +702,7 @@ Date: 2026-11-15. Grantor: awarebayes.
 - Maintainer answer: "yes"
 - With: "idk lets do ci only for now without windows?"
 - Scope: until the maintainer revokes it, the GitHub-hosted Windows CI target-hash job (built by p128: pinned MSVC v141 19.16.27054 with a verified cache, normalized SHA-256 against the published (build id, RVA, size, hash)) may serve as the second independent host, in place of the native Windows PC. A registered primary runner (native Windows PC or Mac under Wine) supplies the full first-host comparator evidence. The machines and host identities must differ; the explicit CI-hash pair may use native Windows on both machines (maintainer directive, 2026-11-17). The ordinary two-comparator-host rule is unchanged.
-- Unchanged: the comparator, the family rule, Reviewer approvals, sampling, and the acceptance rule.
+- Unchanged: the comparator, the match floor and the review requirement.
 - No game bytes go to CI. Only reconstructed source, which is published on acceptance anyway, and the already-published hashes.
 
 Implementation: `ci-hash` confirmations retain the unmodified full primary-host comparator report and
@@ -768,5 +715,4 @@ masked hash for the primary comparator's reference, alias, unwind or EH checks. 
 unsupported target hashes are unconfirmable. Cache verification failure, compiler pin mismatch,
 non-reproduction or nondeterminism produces no confirmation. Candidate source travels on a
 separate batch branch; trusted tools and target hashes come from the dispatched main revision.
-Only sanitized JSON results are uploaded as artifacts. The existing review, family, sampling,
-integration and acceptance steps still apply. No function is accepted by this machinery change.
+Only sanitized JSON results are uploaded as artifacts. The review and acceptance steps still apply. No function is accepted by this machinery change.
