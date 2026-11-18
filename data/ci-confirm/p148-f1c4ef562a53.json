@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "5882cd2c4a2252742efd8722bd8637e22ce6b890",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/fo4b4b_328f00/BGSReverbParameters.cpp": "ba71febf5c2b4510e0aeb5274596d00ce67ade23fa14506f9f9371b07d3c671c",
+    "reconstruction/fo4b4b_328f00/BGSReverbParameters.h": "dfeb25fbc417ad5859e51d0e7ecf5b70c5dcc9f471e4f3861eae701b6bb822ca"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr125-f68883a3-0-squash-328ea0",
+      "unit": "reconstruction/fo4b4b_328f00/BGSReverbParameters.cpp",
+      "closure": [
+        "reconstruction/fo4b4b_328f00/BGSReverbParameters.cpp",
+        "reconstruction/fo4b4b_328f00/BGSReverbParameters.h"
+      ],
+      "source_sha256": "e5984ba7a59dbedd422923baf28198d4884d97ad8a71658cecfd7e32a842a6c2",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 3313312,
+          "size": 20,
+          "symbol": "?DoGetDecayHFRatio@BGSReverbParameters@@UEBAMXZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "27e1c22b39a258e65cb7ac281b43139c3ccceced6eb7375bee9fe697beb33488",
+      "first_content_sha256": "513139c9c2554bc144a361f477903ded2735dacc1613fd11382900e4ab75df39"
+    }
+  ]
+}
