@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "base_sha": "62ff5a55777f3aa5dbbbee776414fd9b891679ae",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/contrib_tesfurniture/TESFurniture.cpp": "43b6ea69ff347cbc9b2c4df437b2238e56bd85238a541291d48be234eb734b44",
+    "reconstruction/contrib_tesfurniture/TESFurniture.h": "52cfcf10e43e927029a6a01725fe64e495b682c137360372d7461b26afa589cb"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr157-888b80d3-0-squash",
+      "unit": "reconstruction/contrib_tesfurniture/TESFurniture.cpp",
+      "closure": [
+        "reconstruction/contrib_tesfurniture/TESFurniture.cpp",
+        "reconstruction/contrib_tesfurniture/TESFurniture.h"
+      ],
+      "source_sha256": "eea05344206a01cf4ff7140a08aca7ff69c2c383905b225c3bef36dca98944d0",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 2547984,
+          "size": 20,
+          "symbol": "?InitializeData@TESFurniture@@UEAAXXZ"
+        },
+        {
+          "rva": 2551168,
+          "size": 55,
+          "symbol": "?Clone3D@TESFurniture@@UEAAPEAVNiAVObject@@PEAVTESObjectREFR@@@Z"
+        }
+      ],
+      "first_host": {
+        "host_id": "winpc-native",
+        "machine": "maintainer-winpc",
+        "loader": "native",
+        "os": "windows"
+      },
+      "first_object_sha256": "efcb1a3827c4cefdfcc1bbe5126bffda670b94644454d40e894d42a55fa3be49",
+      "first_content_sha256": "2e37af1b2e0fd4d132333809f7e1077237490e0a42ae40d8f291b15cb87efe17"
+    }
+  ]
+}
