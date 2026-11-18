@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "base_sha": "7d9f652791e1a84effa29216a334fc8e371d5728",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/netimmerse/NiObject.h": "00a9b1e9eaeefaa0a069d434e7a3eda6a70e91bf10abfaa2dd57b667643fc433",
+    "reconstruction/netimmerse/NiSkinInstance.cpp": "231d16f30b87054d6d37c1eee019f13e8d1766bc3c5b77b3d3d83343962a3410",
+    "reconstruction/netimmerse/NiSkinInstance.h": "dd9e171df8fb1557d22f41dfaf9743b8acc124a2c8d3cbeda31dd1006649e709"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr178-0d26d4d6-0-squash",
+      "unit": "reconstruction/netimmerse/NiSkinInstance.cpp",
+      "closure": [
+        "reconstruction/netimmerse/NiObject.h",
+        "reconstruction/netimmerse/NiSkinInstance.cpp",
+        "reconstruction/netimmerse/NiSkinInstance.h"
+      ],
+      "source_sha256": "c43391f7184386b349f478a62785daaa7c3bb9ce69eb239fd1955aea69a7fa19",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2-root-includes.json",
+      "recipe_sha256": "b1119bb6d7e96bcd776dd4e4ac598fb74441d25e055ecd1c733a71482655bcfc",
+      "functions": [
+        {
+          "rva": 15691600,
+          "size": 52,
+          "symbol": "??_GNiSkinInstance@@UEAAPEAXI@Z"
+        },
+        {
+          "rva": 15767200,
+          "size": 51,
+          "symbol": "?LoadBinary@NiSkinInstance@@UEAAXAEAVNiStream@@@Z"
+        },
+        {
+          "rva": 15767584,
+          "size": 167,
+          "symbol": "?RegisterStreamables@NiSkinInstance@@UEAA_NAEAVNiStream@@@Z"
+        },
+        {
+          "rva": 15767760,
+          "size": 186,
+          "symbol": "?SaveBinary@NiSkinInstance@@UEAAXAEAVNiStream@@@Z"
+        },
+        {
+          "rva": 15767952,
+          "size": 112,
+          "symbol": "?IsEqual@NiSkinInstance@@UEAA_NPEAVNiObject@@@Z"
+        },
+        {
+          "rva": 15768736,
+          "size": 9,
+          "symbol": "?Unk_25@NiSkinInstance@@UEAAXXZ"
+        },
+        {
+          "rva": 15771280,
+          "size": 91,
+          "symbol": "?Ctor@NiSkinInstance@@QEAAPEAV1@XZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "10e55b8938cbe0afe5cde015a16809474b405719b22e06f9c21950ef3ce0f3d7",
+      "first_content_sha256": "14ae40b60eef21f368e87115d5d50220ad0948d2b03534871972bc26eb5a772e"
+    }
+  ]
+}
