@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "base_sha": "c7e8f6cab311a5509457b8799a446d4b28000c5b",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/contrib_bgsreverbparameters/BGSReverbParameters.cpp": "550c46183cd56093404176d930e7305f41e230685264af750f013c0f805a3566",
+    "reconstruction/contrib_bgsreverbparameters/BGSReverbParameters.h": "6954e9f888c8312f972399fdee23a5cf7e353d7ceebffb8b2f5dcba4110fa01e"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr125-6f4b4a12-0-squash",
+      "unit": "reconstruction/contrib_bgsreverbparameters/BGSReverbParameters.cpp",
+      "closure": [
+        "reconstruction/contrib_bgsreverbparameters/BGSReverbParameters.cpp",
+        "reconstruction/contrib_bgsreverbparameters/BGSReverbParameters.h"
+      ],
+      "source_sha256": "9d5382aba85c570aef58d9d931911b36b7eb5641bbb679977a20cca02bed3b8b",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 3312624,
+          "size": 22,
+          "symbol": "?InitializeData@BGSReverbParameters@@UEAAXXZ"
+        },
+        {
+          "rva": 3313248,
+          "size": 8,
+          "symbol": "?DoGetRoomLevel@BGSReverbParameters@@UEBAHXZ"
+        },
+        {
+          "rva": 3313264,
+          "size": 8,
+          "symbol": "?DoGetRoomHFLevel@BGSReverbParameters@@UEBAHXZ"
+        },
+        {
+          "rva": 3313280,
+          "size": 20,
+          "symbol": "?DoGetDecayTime@BGSReverbParameters@@UEBAMXZ"
+        },
+        {
+          "rva": 3313312,
+          "size": 20,
+          "symbol": "?DoGetDecayHFRatio@BGSReverbParameters@@UEBAMXZ"
+        },
+        {
+          "rva": 3313344,
+          "size": 8,
+          "symbol": "?DoGetReflectionLevel@BGSReverbParameters@@UEBAHXZ"
+        },
+        {
+          "rva": 3313360,
+          "size": 20,
+          "symbol": "?DoGetReflectionDelay@BGSReverbParameters@@UEBAMXZ"
+        },
+        {
+          "rva": 3313392,
+          "size": 8,
+          "symbol": "?DoGetReverbLevel@BGSReverbParameters@@UEBAHXZ"
+        },
+        {
+          "rva": 3313440,
+          "size": 12,
+          "symbol": "?DoGetDiffusion@BGSReverbParameters@@UEBAMXZ"
+        },
+        {
+          "rva": 3313472,
+          "size": 12,
+          "symbol": "?DoGetDensity@BGSReverbParameters@@UEBAMXZ"
+        },
+        {
+          "rva": 3313504,
+          "size": 12,
+          "symbol": "?DoGetHFReference@BGSReverbParameters@@UEBAMXZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "973d3c6c756ec1c8436f88743d4a5e956d6c99eaaa1b353ee8b14a0acb294e22",
+      "first_content_sha256": "736fe7bd3b291d4a4559f59e664f34d1ab46a97100df8ba5155d3c8cee70d2f9"
+    }
+  ]
+}
