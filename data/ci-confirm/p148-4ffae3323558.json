@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "76fa2d772a29322f0de9089c1a305a962c294a88",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/bsengine/BSParticleShaderSnowEmitter.cpp": "3c7e759653e0346525b37e872d46364819fc4aa02fc16d320a8efb83b0bb909e",
+    "reconstruction/bsengine/BSParticleShaderSnowEmitter.h": "fffb88ccb48b294a232528f3d1d04d8c2b5bc2a126ac2fda8eb43e9594805c0b"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr175-0962a702-0-squash",
+      "unit": "reconstruction/bsengine/BSParticleShaderSnowEmitter.cpp",
+      "closure": [
+        "reconstruction/bsengine/BSParticleShaderSnowEmitter.cpp",
+        "reconstruction/bsengine/BSParticleShaderSnowEmitter.h"
+      ],
+      "source_sha256": "301f25959727316c0e1aae4805c59639e0badc9a1e6d785456ee9ce6e56f716d",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 2755616,
+          "size": 52,
+          "symbol": "??_GBSParticleShaderSnowEmitter@@UEAAPEAXI@Z"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "68b5ed1c20ab15ee9930a52fe7ce904dcd49cd1693394d27e74be9764d21361b",
+      "first_content_sha256": "11efc7597793831a6f23331ab4b4e9c71234799b8754e5e5b4c383d02397bc36"
+    }
+  ]
+}
