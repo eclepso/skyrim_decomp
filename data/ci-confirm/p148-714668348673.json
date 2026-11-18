@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "base_sha": "7d9f652791e1a84effa29216a334fc8e371d5728",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/netimmerse/NiGeometry.cpp": "b5084d885b8e73865920b5b32581d19b2e7bec0ba11af724bc56d7bd45d07327",
+    "reconstruction/netimmerse/NiGeometry.h": "4809ec350f543e9deaebfb05d9ee8fbb2f05f16ae7f7aaa6b799d27d33975c00"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr168-c0fd4676-0-squash",
+      "unit": "reconstruction/netimmerse/NiGeometry.cpp",
+      "closure": [
+        "reconstruction/netimmerse/NiGeometry.cpp",
+        "reconstruction/netimmerse/NiGeometry.h"
+      ],
+      "source_sha256": "af5a5b1053f0db5f8e3cf9bb8d3a0dabdcfe35e60f872cf3ceff2441fad8c3ce",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2-root-includes.json",
+      "recipe_sha256": "b1119bb6d7e96bcd776dd4e4ac598fb74441d25e055ecd1c733a71482655bcfc",
+      "functions": [
+        {
+          "rva": 15772944,
+          "size": 140,
+          "symbol": "?RegisterStreamables@NiGeometry@@QEAA_NAEAVNiStream@@@Z"
+        },
+        {
+          "rva": 15773104,
+          "size": 256,
+          "symbol": "?SaveBinary@NiGeometry@@QEAAXAEAVNiStream@@@Z"
+        },
+        {
+          "rva": 15773712,
+          "size": 49,
+          "symbol": "?UpdateDownwardPass@NiGeometry@@QEAAXAEAVNiUpdateData@@I@Z"
+        },
+        {
+          "rva": 15773776,
+          "size": 56,
+          "symbol": "?UpdateSelectedDownwardPass@NiGeometry@@QEAAXAEAVNiUpdateData@@I@Z"
+        },
+        {
+          "rva": 15774016,
+          "size": 3,
+          "symbol": "?Unk_36@NiGeometry@@QEAAIXZ"
+        },
+        {
+          "rva": 15774032,
+          "size": 138,
+          "symbol": "?Unk_37@NiGeometry@@QEAAXPEAVGeometryRefView@@@Z"
+        },
+        {
+          "rva": 15775728,
+          "size": 90,
+          "symbol": "?Unk_3A@NiGeometry@@QEAAPEAXXZ"
+        },
+        {
+          "rva": 15776192,
+          "size": 78,
+          "symbol": "?PostLinkObject@NiGeometry@@QEAAXAEAVNiStream@@@Z"
+        },
+        {
+          "rva": 15776288,
+          "size": 75,
+          "symbol": "?SetSelectiveUpdateFlags@NiGeometry@@QEAAXAEA_N_N0@Z"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "b3a633fc8a2a1a6a301b85df4a645e35d540e54ad388b23952f8b4d20c267363",
+      "first_content_sha256": "de45b3af3715f0cb0af18898d2dca7fb85485a23b9d0c1a1bea4cf90883e1ff6"
+    }
+  ]
+}
