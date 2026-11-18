@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "01dbf6783126fa3274ab386f65277f5fab30a5bc",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/fo4fresh_4e6257c1/MagicItem.cpp": "fa990c14fd3f114b212db43d8de795b5082b18b4c0c1a12ec97b5466acac698e",
+    "reconstruction/fo4fresh_4e6257c1/MagicItem.h": "66d1120d2475abeb155a5290b7070095b1b2907b925788b48d6d03f84b857ce3"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr115-6fe7ffdf-0-squash-146680",
+      "unit": "reconstruction/fo4fresh_4e6257c1/MagicItem.cpp",
+      "closure": [
+        "reconstruction/fo4fresh_4e6257c1/MagicItem.cpp",
+        "reconstruction/fo4fresh_4e6257c1/MagicItem.h"
+      ],
+      "source_sha256": "907095534497781e8e055a1b45014a67df3a310e0f1e7dfe39ebb2ecc7864ee3",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 1336960,
+          "size": 4,
+          "symbol": "?GetChargeTime@MagicItem@@UEBAMXZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "c864bb43e8f2ea217e7c76fd0f50a5397e119f91667ec8d5db2588fc8bce58bd",
+      "first_content_sha256": "87a9246502f09447161164158aaf605a406848780b39fe29c7a7fd71c9e141fc"
+    }
+  ]
+}
