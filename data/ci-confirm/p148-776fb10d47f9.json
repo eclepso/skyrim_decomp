@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "base_sha": "7d9f652791e1a84effa29216a334fc8e371d5728",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/contrib_magicitem/MagicItem.cpp": "69580db6b0c5760a412378d91c4d591ec02a55fe18f7c78fe39f9c8e57f6cbe0",
+    "reconstruction/contrib_magicitem/MagicItem.h": "499213648c3a0622770de5efab4efd665ab04a725112a1d551509fc3853cee9f"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr115-90703b5a-0-squash",
+      "unit": "reconstruction/contrib_magicitem/MagicItem.cpp",
+      "closure": [
+        "reconstruction/contrib_magicitem/MagicItem.cpp",
+        "reconstruction/contrib_magicitem/MagicItem.h"
+      ],
+      "source_sha256": "3d6e70789de37b8566a193e1441ce1a6ea6747c4d4ae56f752db3eeca81cc46f",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 1336960,
+          "size": 4,
+          "symbol": "?GetChargeTime@MagicItem@@UEBAMXZ"
+        },
+        {
+          "rva": 1337456,
+          "size": 26,
+          "symbol": "?IsAutoCalc@MagicItem@@UEBA_NXZ"
+        },
+        {
+          "rva": 1370064,
+          "size": 24,
+          "symbol": "?IsPoison@MagicItem@@UEBA_NXZ"
+        },
+        {
+          "rva": 1381584,
+          "size": 51,
+          "symbol": "?HasEffect@MagicItem@@UEBA_NH@Z"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "f9131d4f223460a6c83e21e39fb81986d629b3d56a1737e626436cccf908be4e",
+      "first_content_sha256": "763745140984ddcc3c43844ea02fe77aa128f532f251ac38f96e6423ec000e3e"
+    }
+  ]
+}
