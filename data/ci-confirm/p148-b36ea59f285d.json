@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "base_sha": "c7e8f6cab311a5509457b8799a446d4b28000c5b",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/contrib_spellitem/SpellItem.cpp": "b608a5388c7985497be60f3509e11b66ef3a4333757d127e25ea56ddd16f5d78",
+    "reconstruction/contrib_spellitem/SpellItem.h": "950537857d0d0e3ffd8cb8c6ac9d5f7b3af529191775bf367a01a3471eab4997"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr123-92e094b5-0-squash",
+      "unit": "reconstruction/contrib_spellitem/SpellItem.cpp",
+      "closure": [
+        "reconstruction/contrib_spellitem/SpellItem.cpp",
+        "reconstruction/contrib_spellitem/SpellItem.h"
+      ],
+      "source_sha256": "715faadf3fdbaa7f064edecf2d785e8223b441c3124a0b9e5c65989f5a530da9",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 1395952,
+          "size": 8,
+          "symbol": "?GetData2@SpellItem@@UEAAPEAUSpellItemData@@XZ"
+        },
+        {
+          "rva": 1396000,
+          "size": 7,
+          "symbol": "?GetDelivery@SpellItem@@UEBA?AW4Delivery@MagicSystem@@XZ"
+        },
+        {
+          "rva": 1396016,
+          "size": 46,
+          "symbol": "?GetFixedCastDuration@SpellItem@@UEBAMXZ"
+        },
+        {
+          "rva": 1397600,
+          "size": 26,
+          "symbol": "?IgnoresResistance@SpellItem@@UEBA_NXZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "556064308c46456129f3367a49c330e7b2aa0444653a9c6ce24e3633a84793e9",
+      "first_content_sha256": "cfecce29f5e8915db60e4a43b2ff3921101ee9b40cfeb32de5cc75a3ab1383b9"
+    }
+  ]
+}
