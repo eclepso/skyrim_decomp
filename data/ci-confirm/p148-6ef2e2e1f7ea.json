@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "eff3c833615b288c93eed6e6766ca1906904e512",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/fo4b4b_267530/BGSTalkingActivator.cpp": "c5a9847cd2ebfe228c2820d00f062959877e63daa4601048a66c669a56d8502f",
+    "reconstruction/fo4b4b_267530/BGSTalkingActivator.h": "d21296aa0ad74847b7b96ff4d7be7e283e6512cdfc1693d6b6aa749d07317ed9"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr109-28ae7b59-0-squash-2671e0",
+      "unit": "reconstruction/fo4b4b_267530/BGSTalkingActivator.cpp",
+      "closure": [
+        "reconstruction/fo4b4b_267530/BGSTalkingActivator.cpp",
+        "reconstruction/fo4b4b_267530/BGSTalkingActivator.h"
+      ],
+      "source_sha256": "ed18e2d3a78c4eefaae458d21061d5e88a1028540d67b0e699eaaf08bfb3e249",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 2519520,
+          "size": 16,
+          "symbol": "?InitializeData@BGSTalkingActivator@@UEAAXXZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "c6acc1ebc4a4ef6487b8ab623b4e6b53d26c64a26d00afb02f3ed8c98df06f56",
+      "first_content_sha256": "d7fbd38e22d6dac7941dc6375888b2d31f520104e73b49db02cf57dbb3710c46"
+    }
+  ]
+}
