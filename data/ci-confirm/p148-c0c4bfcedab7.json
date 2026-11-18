@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "7d9f652791e1a84effa29216a334fc8e371d5728",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/forms/BGSAttackData.cpp": "41c101ef06e5eb40c5879342b1e5850684f6ff66c6701123ac7b0877ad2b3051",
+    "reconstruction/forms/BGSAttackData.h": "d6daede0ae0324600e2357bf84bb6821b6c27ef15c29c97a213654f4733e14e0"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr180-792ac466-0-squash",
+      "unit": "reconstruction/forms/BGSAttackData.cpp",
+      "closure": [
+        "reconstruction/forms/BGSAttackData.cpp",
+        "reconstruction/forms/BGSAttackData.h"
+      ],
+      "source_sha256": "210b3e125f6204f2f5a551fca6e0d651e7a9e7cb14fb912b757b81982b501e8c",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 4501472,
+          "size": 73,
+          "symbol": "??_GBGSAttackData@@UEAAPEAXI@Z"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "41c375910f617ed250ccfe7237c569cf86e1fdc609247f6667e2552121389268",
+      "first_content_sha256": "511c4d15d4b65c2dbbde06833389f11d1ff989e49ac3b0a99ecd9f88ae61d3f7"
+    }
+  ]
+}
