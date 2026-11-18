@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "base_sha": "7d9f652791e1a84effa29216a334fc8e371d5728",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/netimmerse/NiParticleSystem.cpp": "fb339649575d590cc5bc66b409c8645e372658a4fefd86985c48ade2216601ff",
+    "reconstruction/netimmerse/NiParticleSystem.h": "c29059ff517c7e5975378700a42ffa6b34c428684d57e9a7be62da55b9a6fd51"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr163-1a6be09b-0-squash",
+      "unit": "reconstruction/netimmerse/NiParticleSystem.cpp",
+      "closure": [
+        "reconstruction/netimmerse/NiParticleSystem.cpp",
+        "reconstruction/netimmerse/NiParticleSystem.h"
+      ],
+      "source_sha256": "575c7fda36bbcaa950ae194cf5d821bfc4fd71b6ca019faf9542681c02f51194",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2-root-includes.json",
+      "recipe_sha256": "b1119bb6d7e96bcd776dd4e4ac598fb74441d25e055ecd1c733a71482655bcfc",
+      "functions": [
+        {
+          "rva": 16355152,
+          "size": 127,
+          "symbol": "?LoadBinary@NiParticleSystem@@UEAAXAEAVNiStream@@@Z"
+        },
+        {
+          "rva": 16355936,
+          "size": 89,
+          "symbol": "?RegisterStreamables@NiParticleSystem@@UEAA_NAEAVNiStream@@@Z"
+        },
+        {
+          "rva": 16356032,
+          "size": 193,
+          "symbol": "?SaveBinary@NiParticleSystem@@UEAAXAEAVNiStream@@@Z"
+        },
+        {
+          "rva": 16356240,
+          "size": 192,
+          "symbol": "?IsEqual@NiParticleSystem@@UEAA_NPEAVNiObject@@@Z"
+        },
+        {
+          "rva": 16357936,
+          "size": 96,
+          "symbol": "?UpdateDownwardPass@NiParticleSystem@@UEAAXAEAVNiUpdateData@@I@Z"
+        },
+        {
+          "rva": 16358048,
+          "size": 109,
+          "symbol": "?UpdateSelectedDownwardPass@NiParticleSystem@@UEAAXAEAVNiUpdateData@@I@Z"
+        },
+        {
+          "rva": 16358304,
+          "size": 68,
+          "symbol": "?SetSelectiveUpdateFlags@NiParticleSystem@@UEAAXAEA_N_N0@Z"
+        },
+        {
+          "rva": 16359744,
+          "size": 67,
+          "symbol": "??_GNiParticleSystem@@UEAAPEAXI@Z"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "f53092b4dfe4eefbc3e8cd349fc85d11949ca53006ff4a14be358091740bf4a6",
+      "first_content_sha256": "161421357cd71f2a858813aeceab2c250280c92630edf75edc4d05129fd77d7c"
+    }
+  ]
+}
