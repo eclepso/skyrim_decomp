@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "base_sha": "eff3c833615b288c93eed6e6766ca1906904e512",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/fo4p198c_bound/TESBoundObject.cpp": "9f3e190f866c5525f0b4cd0e7470b3aaf297ad4061e648689602ea52a46ffa66",
+    "reconstruction/fo4p198c_bound/TESBoundObject.h": "aec17b2b83d5384e64e5998b4af7e790d50836e4f737e9586f41a35dd00404ed",
+    "reconstruction/fo4p198c_bound/TESForm.h": "d5c501918a2d97265f85e5430fb1a3183b6d0dfb0216484106069051b02d1fc1"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr104-5f9477fc-0-squash-1467c0",
+      "unit": "reconstruction/fo4p198c_bound/TESBoundObject.cpp",
+      "closure": [
+        "reconstruction/fo4p198c_bound/TESBoundObject.cpp",
+        "reconstruction/fo4p198c_bound/TESBoundObject.h",
+        "reconstruction/fo4p198c_bound/TESForm.h"
+      ],
+      "source_sha256": "bdcb9df207ebd5ae9e98a44a7e2c2ed9fae6287249c2c73d9aff89808c41e94a",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 1337280,
+          "size": 3,
+          "symbol": "?GetObjectVoiceType@TESBoundObject@@UEBAPEAVBGSVoiceType@@XZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "943e7aae493c413cd82b4b341aba2d6f267da40ce7de431643883506454cfa04",
+      "first_content_sha256": "5d68c25be648dd4b7104a6b2807838ff45b2ee359c53c75fe75c8bec6ce1f16e"
+    }
+  ]
+}
