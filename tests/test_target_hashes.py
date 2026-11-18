@@ -15,7 +15,6 @@ sys.path.insert(0, str(ROOT / 'tools'))
 import compare
 from pecoff import CoffObject, Reject
 import ci_target_hash_check as ci
-import contrib_hash_signal as signal
 import target_hashes as h
 import synthetic_pecoff as fx
 
@@ -161,19 +160,6 @@ class TargetHashTest(unittest.TestCase):
                 self.assertNotIn(tmp, out.read_text())
                 self.assertEqual(report['acceptance'], 'not-evaluated')
                 self.assertIn('error', report)
-
-    def test_autopilot_signal_is_exact_head_and_always_advisory(self):
-        run = dict(id=1, name='target-hashes', app=dict(slug='github-actions'),
-                   head_sha='a' * 40, status='completed', conclusion='success')
-        self.assertEqual(signal.advisory_hash_signal([run], 'b' * 40)['state'], 'absent')
-        for conclusion in ('success', 'failure', 'skipped'):
-            run['conclusion'] = conclusion
-            got = signal.advisory_hash_signal([run], 'a' * 40)
-            self.assertEqual(got['state'], conclusion)
-            self.assertTrue(got['advisory'])
-            self.assertEqual(got['acceptance'], 'not-evaluated')
-        run['app']['slug'] = 'other'
-        self.assertEqual(signal.advisory_hash_signal([run], 'a' * 40)['state'], 'absent')
 
 
 if __name__ == '__main__':

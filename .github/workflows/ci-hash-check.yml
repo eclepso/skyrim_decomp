@@ -1,8 +1,0 @@
-name: Public MSVC hash self-test
-on:
-  workflow_dispatch:
-permissions:
-  contents: read
-jobs:
-  public-self-test:
-    uses: ./.github/workflows/ci-target-hash.yml

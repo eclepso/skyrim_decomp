@@ -11,8 +11,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 import build_leaderboard as board
 import contributor_standing as standing
 import ci_target_hash_check as ci
-import contrib_autopilot as ap
-from test_contrib_autopilot import FakeRuntime, pr
 
 
 class Credits(unittest.TestCase):
@@ -145,20 +143,6 @@ class Credits(unittest.TestCase):
             self.assertEqual(standing.main(['--author', 'alice', '--clear']), 0)
         got = standing.standing(standing.load(self.root), 'alice')
         self.assertEqual((got['strikes'], got['false_claims']), (0, 1))
-
-    def test_autopilot_stops_before_fetch_and_resumes_after_clear(self):
-        data = self.events()
-        runtime = FakeRuntime()
-        state = ap.State(self.root / 'state', ap.DEFAULTS)
-        with patch.object(standing, 'load', return_value=data):
-            ap.process(runtime, state, pr(author='alice'))
-        self.assertEqual(runtime.calls, [])
-        self.assertEqual(runtime.messages[0][1], 'needs-maintainer')
-        data['contributors']['alice']['cleared_strikes'] = 3
-        with patch.object(standing, 'load', return_value=data):
-            ap.process(runtime, state, pr(author='alice'))
-        self.assertIn('fetch', runtime.calls)
-
 
 
 class SiteCreditRendering(unittest.TestCase):
