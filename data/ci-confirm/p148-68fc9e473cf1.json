@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "base_sha": "c7e8f6cab311a5509457b8799a446d4b28000c5b",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/forms/BGSMoviePlayer.cpp": "1b6c45a234ff2a8fa0cb77f4c241d2d3b3e04490b838be7297f9016c86ea4270",
+    "reconstruction/forms/BGSMoviePlayer.h": "6ffb6fc228b6d43a4c421a8a2381f197ec6a448f607d248215a873134718e107"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr129-7ca00ce5-0-squash",
+      "unit": "reconstruction/forms/BGSMoviePlayer.cpp",
+      "closure": [
+        "reconstruction/forms/BGSMoviePlayer.cpp",
+        "reconstruction/forms/BGSMoviePlayer.h"
+      ],
+      "source_sha256": "9fae5abcbac182b29ef3370cca674eb91b16c8e9ca5e1b32b6582b6830b1dd12",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 6572240,
+          "size": 12,
+          "symbol": "?Unk_07@BGSMoviePlayer@@UEAAXXZ"
+        },
+        {
+          "rva": 6572304,
+          "size": 7,
+          "symbol": "?Unk_09@BGSMoviePlayer@@UEAAIXZ"
+        },
+        {
+          "rva": 6572320,
+          "size": 7,
+          "symbol": "?Unk_0A@BGSMoviePlayer@@UEAAIXZ"
+        },
+        {
+          "rva": 6572336,
+          "size": 8,
+          "symbol": "?Unk_0B@BGSMoviePlayer@@UEAAEXZ"
+        },
+        {
+          "rva": 6572352,
+          "size": 17,
+          "symbol": "?Unk_0C@BGSMoviePlayer@@UEAAIXZ"
+        },
+        {
+          "rva": 6574368,
+          "size": 3,
+          "symbol": "?Unk_06@BGSMoviePlayer@@UEAAXXZ"
+        },
+        {
+          "rva": 6574384,
+          "size": 3,
+          "symbol": "?Unk_05@BGSMoviePlayer@@UEAAXXZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "a72617a5320d1783b3c65f7efd3dec987223b17dddf3ca476609598b16937e4b",
+      "first_content_sha256": "b52bd0a44847a3ca1e2db3335949ba974a4325bad8dec5e86cb11b8f5333330f"
+    }
+  ]
+}
