@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "eada630d91f351d3045900ec618d475cc05ab849",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/bsengine/BSInstanceTriShape.cpp": "0ec65c2947fc04f7c8b1ab3249244d71d6054a3afb3e7421a56596e332c0c45b",
+    "reconstruction/bsengine/BSInstanceTriShape.h": "23071a4829d75e28e48fec60eaee936a20d77a83cb36a38e192e29bf2854b7f1"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr170-88a6e05e-0-squash-fe4240",
+      "unit": "reconstruction/bsengine/BSInstanceTriShape.cpp",
+      "closure": [
+        "reconstruction/bsengine/BSInstanceTriShape.cpp",
+        "reconstruction/bsengine/BSInstanceTriShape.h"
+      ],
+      "source_sha256": "74acb62721847890a374341ad1aedb3270588115e85c2e41f2b57aef91f7d241",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 16663104,
+          "size": 52,
+          "symbol": "??_GBSInstanceTriShape@@UEAAPEAXI@Z"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "59f6d371b18febcbdb2f5b3ed511e8d03c9ac7383109a03669e8c16c11ae0ecf",
+      "first_content_sha256": "dcf1a95766678fd7068ee09dc958ed92b73d5e3115568d8100ae5b82d8fc99c7"
+    }
+  ]
+}
