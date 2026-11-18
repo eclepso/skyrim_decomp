@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "base_sha": "76fa2d772a29322f0de9089c1a305a962c294a88",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/contrib_tesobjectacti/TESObjectACTI.cpp": "783251656e04bedbd4cb598d69e7befca8ad039a7795511a26e146545800eab1",
+    "reconstruction/contrib_tesobjectacti/TESObjectACTI.h": "831738561ecee807c07ecfa5b8b15bb5210e05b9e0e9ef5449b50484fa1be5af"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr111-fd81755c-0-squash",
+      "unit": "reconstruction/contrib_tesobjectacti/TESObjectACTI.cpp",
+      "closure": [
+        "reconstruction/contrib_tesobjectacti/TESObjectACTI.cpp",
+        "reconstruction/contrib_tesobjectacti/TESObjectACTI.h"
+      ],
+      "source_sha256": "92f7a0d510c062c4d9b873f1cac6f6c14bc2f13ab9c14c824b20cbf4e16a0abf",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 2520720,
+          "size": 12,
+          "symbol": "?GetIgnoredBySandbox@TESObjectACTI@@UEBA_NXZ"
+        },
+        {
+          "rva": 2521040,
+          "size": 8,
+          "symbol": "?GetWaterType@TESObjectACTI@@UEBAPEAVTESWaterForm@@XZ"
+        },
+        {
+          "rva": 2598544,
+          "size": 12,
+          "symbol": "?IsWater@TESObjectACTI@@UEBA_NXZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "4b8054e8843cc3448c7e768fdc9fd40a49a86e4bf8a40a108e309e14aa995f11",
+      "first_content_sha256": "8554272535224de169c9e85baa149023292d0d0b538e79d7cbceae973f62fcf8"
+    }
+  ]
+}
