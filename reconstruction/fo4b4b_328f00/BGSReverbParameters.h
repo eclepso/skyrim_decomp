@@ -30,9 +30,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+// DoGetRoomLevel, DoGetRoomHFLevel, DoGetReflectionLevel, DoGetReverbLevel, DoGetDiffusion, DoGetDensity, DoGetHFReference, DoGetDecayTime, DoGetDecayHFRatio, DoGetReflectionDelay, InitializeData: COMMUNITY(CharmedBaryon/CommonLibSSE-NG@b93280e832f263dbef44e44cbe2936622a02f91a, MIT); names only, the bodies are written from the target listing
+// kDecayTimeScale: GUESS(low); global float at address 0x1b5bdc4, the multiplier applied to the decay time
+// kReflectionDelayScale: GUESS(low); global float at address 0x1834b48, the multiplier applied to the reflection delay
+// ReverbParams decayHFRatio, reflectionDelay: widened to unsigned bytes to match the zero-extending loads in the listing
 #pragma once
+extern float kDecayTimeScale;
+extern float kReflectionDelayScale;
 class BaseFormComponent { public: virtual ~BaseFormComponent(); };
-class TESForm : public BaseFormComponent { public: void* files; unsigned flags, id; unsigned short inGameFlags; unsigned char type, pad; unsigned pad2; };
+class TESForm : public BaseFormComponent { public: virtual void InitializeData(); void* files; unsigned flags, id; unsigned short inGameFlags; unsigned char type, pad; unsigned pad2; };
 class BSIReverbType { public:
  virtual int DoGetRoomLevel() const = 0; virtual int DoGetRoomHFLevel() const = 0;
  virtual float DoGetDecayTime() const = 0; virtual float DoGetDecayHFRatio() const = 0;
@@ -41,6 +47,10 @@ class BSIReverbType { public:
  virtual float DoGetDiffusion() const = 0; virtual float DoGetDensity() const = 0; virtual float DoGetHFReference() const = 0;
 };
 class BGSReverbParameters : public TESForm, public BSIReverbType { public:
- struct ReverbParams { unsigned short decayTime, hfReference; signed char roomFilter, roomHFFilter, reflections, reverb, decayHFRatio, reflectionDelay; unsigned char reverbDelay, diffusionPct, densityPct, pad; } data;
+ struct ReverbParams { unsigned short decayTime, hfReference; signed char roomFilter, roomHFFilter, reflections, reverb; unsigned char decayHFRatio, reflectionDelay, reverbDelay, diffusionPct, densityPct, pad; } data;
  float DoGetReverbDelay() const override;
+ int DoGetRoomLevel() const override; int DoGetRoomHFLevel() const override; int DoGetReflectionLevel() const override; int DoGetReverbLevel() const override;
+ float DoGetDiffusion() const override; float DoGetDensity() const override; float DoGetHFReference() const override;
+ float DoGetDecayTime() const override; float DoGetDecayHFRatio() const override; float DoGetReflectionDelay() const override;
+ void InitializeData() override;
 };
