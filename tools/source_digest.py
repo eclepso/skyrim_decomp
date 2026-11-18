@@ -240,13 +240,26 @@ def include_closure(root, compiled, roots=None):
 
 
 def tu_digest(root, paths):
-    lines = []
+    blobs = {}
     for name in sorted(set(paths)):
         rel = PurePosixPath(name)
         if rel.is_absolute() or '..' in rel.parts:
             raise ValueError(f'translation unit path must be repository-relative: {name}')
-        blob = (Path(root) / rel).read_bytes()
-        lines.append(f'{hashlib.sha256(blob).hexdigest()}  {rel}\n')
+        blobs[name] = (Path(root) / rel).read_bytes()
+    return tu_digest_blobs(blobs)
+
+
+def tu_digest_blobs(blobs):
+    """The unit digest of in-memory file contents keyed by repository-relative path.
+
+    Lets a read-only sandbox, which has no writable temporary directory, digest an old commit's unit.
+    """
+    lines = []
+    for name in sorted(blobs):
+        rel = PurePosixPath(name)
+        if rel.is_absolute() or '..' in rel.parts:
+            raise ValueError(f'translation unit path must be repository-relative: {name}')
+        lines.append(f'{hashlib.sha256(blobs[name]).hexdigest()}  {rel}\n')
     if not lines:
         raise ValueError('translation unit has no files')
     return hashlib.sha256(''.join(lines).encode()).hexdigest()
