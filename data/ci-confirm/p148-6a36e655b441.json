@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "5882cd2c4a2252742efd8722bd8637e22ce6b890",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/fo4b4b_14e040/EnchantmentItem.cpp": "0472f61fa116202729296b3e446f624b6be9bc44577bac0ab745f777e29c4e1f",
+    "reconstruction/fo4b4b_14e040/EnchantmentItem.h": "7e21b6b70d6e41e7b898656c6a8dae0d92caee7384ddbdd25c88a3df0d3c29dd"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr113-31703005-0-squash-14e7a0",
+      "unit": "reconstruction/fo4b4b_14e040/EnchantmentItem.cpp",
+      "closure": [
+        "reconstruction/fo4b4b_14e040/EnchantmentItem.cpp",
+        "reconstruction/fo4b4b_14e040/EnchantmentItem.h"
+      ],
+      "source_sha256": "4d7faa80842035ad01efb466e32e0fc41df8a9b81654a30a581da5393fdb6233",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 1370016,
+          "size": 7,
+          "symbol": "?GetDelivery@EnchantmentItem@@UEBAHXZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "437e00a11d5b01f1d9315018ca45704431316d8fb8d2cfa037f230e7759a62fc",
+      "first_content_sha256": "a614cd2702006d98cacd6641fb95e95ebd47db90dd708ac5ff557bc12c916a83"
+    }
+  ]
+}
