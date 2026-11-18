@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "eada630d91f351d3045900ec618d475cc05ab849",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/bsengine/BSParticleShaderRainEmitter.cpp": "6597ccef98b35fbb4917bc1bf21fbc54657a2193fd2fb3bd94e7b5a6455e1006",
+    "reconstruction/bsengine/BSParticleShaderRainEmitter.h": "4dd1edd7e0377d188a6156050565640f654557feb1b2967a8f80ec900f3107d7"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr172-7542e7d7-0-squash-2a0be0",
+      "unit": "reconstruction/bsengine/BSParticleShaderRainEmitter.cpp",
+      "closure": [
+        "reconstruction/bsengine/BSParticleShaderRainEmitter.cpp",
+        "reconstruction/bsengine/BSParticleShaderRainEmitter.h"
+      ],
+      "source_sha256": "411be17132f1ad659a28a1f74ba284053ad437a12df48aca0f2da35facf90e38",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 2755552,
+          "size": 52,
+          "symbol": "??_GBSParticleShaderRainEmitter@@UEAAPEAXI@Z"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "9254ce3676e3bcb3510e6b7a1f8c01622226f00088d73e232696ed2afcbe14e8",
+      "first_content_sha256": "1b75f57c86fbc684b7c97d77a15c740d0c85f9d3421aefa7e2b5f6bf76b6290b"
+    }
+  ]
+}
