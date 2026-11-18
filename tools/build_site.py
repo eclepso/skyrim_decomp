@@ -1,4 +1,5 @@
 """Generate an offline-capable report from validated public metadata."""
+import argparse
 from collections import Counter
 from html import escape
 import json
@@ -141,9 +142,8 @@ def validated_data():
         return load(publication_revision=content[0])
 
 
-@source_digest_cache()
-def main():
-    data = validated_data()
+def build(data, trends_file=None):
+    """Write dist/ from already validated data; `trends_file` is a history precomputed for HEAD."""
     try:
         revision = subprocess.check_output(['git', 'rev-parse', '--short=12', 'HEAD'], cwd=ROOT, stderr=subprocess.DEVNULL).decode().strip()
         if subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT).strip():
@@ -154,11 +154,14 @@ def main():
     output.mkdir(exist_ok=True)
     ledger = ROOT / 'data/costs.json'
     costs = json.loads(ledger.read_text()) if ledger.exists() else None
-    blobs = build_model_trend.GitBlobs()
-    try:
-        trends, _ = build_model_trend.history('HEAD', blobs)
-    finally:
-        blobs.close()
+    if trends_file:
+        trends = build_model_trend.load_rows(trends_file)
+    else:
+        blobs = build_model_trend.GitBlobs()
+        try:
+            trends, _ = build_model_trend.history('HEAD', blobs)
+        finally:
+            blobs.close()
     (output / 'index.html').write_text(render(data, revision, costs, trends))
     (output / 'join.html').write_text(render_join(data, revision))
     leaderboard = build_leaderboard.standings(ROOT, data)
@@ -175,5 +178,12 @@ def main():
     print(f'Built {output / "index.html"}; source {revision}; no game data included.')
 
 
+@source_digest_cache()
+def main(trends_file=None):
+    build(validated_data(), trends_file)
+
+
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--trends', help='history rows written by build_model_trend.py --rows-out for this HEAD')
+    main(parser.parse_args().trends)

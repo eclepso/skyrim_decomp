@@ -160,11 +160,15 @@ class BlobMemo:
         self.added[key] = digest
 
     def commit(self):
-        if not self.added:
+        if not self.added and os.environ.get('SR_REVISION_CACHE_PRUNE') != '1':
             return
         try:
             with self.connect() as db:
                 db.executemany('INSERT OR REPLACE INTO blobs VALUES (?, ?, ?)',
                                ((self.context, key, value) for key, value in self.added.items()))
+                if os.environ.get('SR_REVISION_CACHE_PRUNE') == '1':
+                    # A store carried between CI runs would otherwise keep one partition per tools
+                    # revision forever; only this scanner's partition can be hit again.
+                    db.execute('DELETE FROM blobs WHERE context != ?', (self.context,))
         except sqlite3.Error:
             pass  # Cache contention/corruption is a miss, never a validation result.

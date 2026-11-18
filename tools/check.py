@@ -1,9 +1,12 @@
 """Validate metadata and common publication mistakes; never compares Skyrim bytes."""
 import argparse
+from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import datetime
 import functools
 import hashlib
 import json
+import multiprocessing
 import os
 from pathlib import Path
 import re
@@ -617,8 +620,35 @@ def acceptance_staleness(fn, root=None):
     return _staleness(fn, ROOT if root is None else root)[0]
 
 
+# One load sees one stable tree, and the inventory check and the status-table render both ask
+# for every accepted entry's staleness; the answer is computed once per load, never kept longer.
+_STALE_MEMO = ContextVar('check_staleness', default=None)
+
+
+@contextmanager
+def staleness_scope():
+    if _STALE_MEMO.get() is not None:
+        yield
+        return
+    token = _STALE_MEMO.set({})
+    try:
+        yield
+    finally:
+        _STALE_MEMO.reset(token)
+
+
 def _staleness(fn, root):
     """(state, detail, compiled file) for acceptance_staleness and its message."""
+    memo = _STALE_MEMO.get()
+    if memo is None:
+        return _staleness_uncached(fn, root)
+    key = (str(root), fn.get('id'), fn.get('report'))
+    if key not in memo:
+        memo[key] = _staleness_uncached(fn, root)
+    return memo[key]
+
+
+def _staleness_uncached(fn, root):
     record = _json_or_none(root / fn['report']) if text(fn.get('report')) else None
     source = (record or {}).get('source')
     if not isinstance(source, dict) or not text(source.get('compiled')):
@@ -667,6 +697,62 @@ def check_named(fn, review):
                 'or predates them (schema 3 with naming_findings [] needed)')
 
 
+def _check_function(fn, target, root):
+    """The record-level checks for one inventory entry; (id, message) when its acceptance is stale."""
+    state = acceptance_staleness(fn, root) if fn['status'] == 'matched' else None
+    if state is not None:
+        # An accepted function whose unit moved on is reported by name, all at once, instead of
+        # failing on the first digest check; it still blocks until re-confirmed and re-reviewed.
+        if state == STALE_REVIEW:
+            validate_match(fn, target, root)
+        check_named(fn, None)
+        return fn['id'], stale_message(fn, root)
+    if fn['status'] == 'matched':
+        check_named(fn, validate_review(fn, validate_match(fn, target, root), root))
+    elif 'named' in fn:
+        check_named(fn, None)
+    elif fn.get('report') is not None:
+        # A record awaiting review must still be consistent with the integrated tree.
+        validate_match(fn, target, root)
+    return None
+
+
+# Entries are independent of each other, so a large inventory is split across forked workers.
+# Results come back in inventory order, so the first failure reported is the one a serial run
+# would report. Small inventories (tests, fresh checkouts) stay in-process.
+_PARALLEL_MIN = 512
+_WORK = None
+
+
+def _work(fn):
+    target, root = _WORK
+    outcome = _check_function(fn, target, root)
+    memo = _STALE_MEMO.get()
+    if memo is None or fn['status'] != 'matched':
+        return outcome, None
+    key = (str(ROOT if root is None else root), fn.get('id'), fn.get('report'))
+    return outcome, (key, memo.get(key))
+
+
+def _check_functions(entries, target, root):
+    jobs = int(os.environ.get('SR_CHECK_JOBS') or os.cpu_count() or 1)
+    if jobs < 2 or len(entries) < _PARALLEL_MIN or 'fork' not in multiprocessing.get_all_start_methods():
+        for fn in entries:
+            yield _check_function(fn, target, root)
+        return
+    global _WORK
+    _WORK = (target, root)
+    try:
+        with multiprocessing.get_context('fork').Pool(jobs) as pool:
+            memo = _STALE_MEMO.get()
+            for outcome, learned in pool.imap(_work, entries, chunksize=64):
+                if memo is not None and learned is not None and learned[1] is not None:
+                    memo[learned[0]] = learned[1]
+                yield outcome
+    finally:
+        _WORK = None
+
+
 def validate(data, target, root=None, stale_ok=False):
     """Validate the inventory; `stale_ok` (for tools that are about to clear staleness) skips the
     `matched` checks of stale entries instead of failing on them: True for every entry, or a set of
@@ -689,7 +775,7 @@ def validate(data, target, root=None, stale_ok=False):
     require(text(data['scope']['notes']), 'Missing scope notes')
     require(data['scope']['functions'] is None and data['scope']['bytes'] is None,
             'Measured scope needs a reviewed inventory/schema extension; bootstrap totals stay null')
-    seen, ranges, stale = set(), [], []
+    seen, ranges, stale, heavy = set(), [], [], []
     require(isinstance(data['functions'], list), 'functions must be a list')
     for fn in data['functions']:
         require(target['status'] == 'pinned', 'Pin target before recording functions')
@@ -707,21 +793,10 @@ def validate(data, target, root=None, stale_ok=False):
         require(not path.is_absolute() and '..' not in path.parts and path.parts[0] in {'findings', 'reports'},
                 'Evidence must reference public findings or reports')
         require(((ROOT if root is None else root) / path).is_file(), 'Evidence does not exist')
-        state = acceptance_staleness(fn, root) if fn['status'] == 'matched' else None
-        if state is not None:
-            # An accepted function whose unit moved on is reported by name, all at once, instead of
-            # failing on the first digest check; it still blocks until re-confirmed and re-reviewed.
-            if state == STALE_REVIEW:
-                validate_match(fn, target, root)
-            stale.append((fn['id'], stale_message(fn, root)))
-            check_named(fn, None)
-        elif fn['status'] == 'matched':
-            check_named(fn, validate_review(fn, validate_match(fn, target, root), root))
-        elif 'named' in fn:
-            check_named(fn, None)
-        elif fn.get('report') is not None:
-            # A record awaiting review must still be consistent with the integrated tree.
-            validate_match(fn, target, root)
+        heavy.append(fn)
+    for outcome in _check_functions(heavy, target, root):
+        if outcome is not None:
+            stale.append(outcome)
     ordered_ranges = sorted(ranges)
     require(all(a[1] <= b[0] for a, b in zip(ordered_ranges, ordered_ranges[1:])),
             'Overlapping function ranges')
@@ -824,11 +899,67 @@ def load(staged=False, publication_revision=None):
     return data
 
 
+def _child(send, call, args):
+    try:
+        call(*args)
+        send.send(('ok', None))
+    except BaseException as exc:  # noqa: BLE001 - every failure must reach the parent
+        try:
+            send.send(('err', exc))
+        except Exception:
+            send.send(('err', ValueError(str(exc) or type(exc).__name__)))
+    finally:
+        send.close()
+
+
+@contextmanager
+def background(calls):
+    """Run independent read-only checks beside the body, in forked children.
+
+    A child that fails, or dies without reporting, fails the whole load: the first failure in
+    call order is raised once the body has finished. Without fork (or with SR_CHECK_JOBS=1) the
+    calls simply run in order after the body, so nothing is ever skipped.
+    """
+    jobs = int(os.environ.get('SR_CHECK_JOBS') or os.cpu_count() or 1)
+    if jobs < 2 or 'fork' not in multiprocessing.get_all_start_methods():
+        yield
+        for call, args in calls:
+            call(*args)
+        return
+    ctx = multiprocessing.get_context('fork')
+    started = []
+    try:
+        # Forked before the validation pool starts any thread, so no child inherits a held lock.
+        for call, args in calls:
+            receive, send = ctx.Pipe(duplex=False)
+            process = ctx.Process(target=_child, args=(send, call, args))
+            process.start()
+            send.close()
+            started.append((process, receive))
+        yield
+        failure = None
+        for process, receive in started:
+            try:
+                kind, value = receive.recv()
+            except EOFError:
+                kind, value = 'err', ValueError('a parallel check ended without a result')
+            process.join()
+            if kind == 'err' and failure is None:
+                failure = value
+        if failure is not None:
+            raise failure
+    finally:
+        for process, receive in started:
+            if process.is_alive():
+                process.terminate()
+            process.join()
+            receive.close()
+
+
 @read_once()
+@staleness_scope()
 def _load_uncached(staged=False):
     if not staged:
-        data = validate(json.loads(read_text(ROOT / 'data/progress.json')),
-                        json.loads(read_text(ROOT / 'builds/target.json')))
         # Tracked and not-yet-added files alike, so a Drafter's new source is linted before staging.
         names = subprocess.check_output(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z',
                                          '--', 'reconstruction'], cwd=ROOT).decode('utf-8').split('\0')
@@ -836,11 +967,14 @@ def _load_uncached(staged=False):
         # does not track the file, so --staged, a CI checkout and acceptance still refuse it.
         untracked = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard', '-z',
                                              '--', 'reconstruction'], cwd=ROOT).decode('utf-8').split('\0')
-        lint(ROOT, sorted({n for n in names if n and (ROOT / n).is_file()}), skeleton_ok=set(untracked) - {''})
-        check_index(ROOT, data)
-        check_costs(ROOT, data)
-        check_contributor_ledger(ROOT)
-        check_progress_svg(ROOT)
+        lint_args = (ROOT, sorted({n for n in names if n and (ROOT / n).is_file()}), set(untracked) - {''})
+        # Lint and the picture check read only the tree, not the inventory result.
+        with background([(lint, lint_args), (check_progress_svg, (ROOT,))]):
+            data = validate(json.loads(read_text(ROOT / 'data/progress.json')),
+                            json.loads(read_text(ROOT / 'builds/target.json')))
+            check_index(ROOT, data)
+            check_costs(ROOT, data)
+            check_contributor_ledger(ROOT)
         return data
     # Match records, source and recipe are checked as staged too, so the index gets its own tree.
     import staged_exports
@@ -1053,17 +1187,29 @@ def check_git(root=ROOT, staged=False, content_revision=None):
     return count
 
 
+def run(staged=False, then=None):
+    """The complete publication scan and metadata load; (tracked file count, validated data).
+
+    `then(data)` runs inside the same sparse-checkout and digest-cache scope, so a caller that
+    builds from the validated data does not scan or validate again.
+    """
+    # Check anonymity before metadata/lint diagnostics could quote offending content.
+    with sparse.full(ROOT):
+        content_revision = []
+        count = check_git(staged=staged, content_revision=content_revision)
+        with source_digest_cache():
+            data = load(staged=staged, publication_revision=content_revision[0] if content_revision else None)
+            if then is not None:
+                then(data)
+    return count, data
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--staged', action='store_true', help='Check index blobs and staged metadata')
     args = parser.parse_args()
     try:
-        # Check anonymity before metadata/lint diagnostics could quote offending content.
-        with sparse.full(ROOT):
-            content_revision = []
-            count = check_git(staged=args.staged, content_revision=content_revision)
-            with source_digest_cache():
-                load(staged=args.staged, publication_revision=content_revision[0] if content_revision else None)
+        count, _ = run(args.staged)
     except (ValueError, KeyError, TypeError, OSError, subprocess.CalledProcessError) as exc:
         print(f'FAIL: {exc}', file=sys.stderr)
         return 1

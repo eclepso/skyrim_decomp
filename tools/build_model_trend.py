@@ -145,6 +145,19 @@ def history(revision, blobs, pending=None):
     return dict(sorted(rows.items())), current
 
 
+def dump_rows(rows, path):
+    Path(path).write_text(json.dumps(rows, sort_keys=True))
+
+
+def load_rows(path):
+    """Rows as `history` returns them; the per-model tallies come back as Counters."""
+    rows = json.loads(Path(path).read_text())
+    for row in rows.values():
+        for key in ('families', 'models', 'sources'):
+            row[key] = Counter(row[key])
+    return rows
+
+
 def chart_limit(values):
     ordered = sorted(values)
     if len(ordered) >= 3 and ordered[-1] > max(ordered[-2] * 2, 1):
@@ -235,6 +248,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--revision', default='HEAD')
     parser.add_argument('--pending-date', help='UTC commit timestamp for staged integration data')
+    parser.add_argument('--rows-out', help='write only the history rows to this file, leaving docs and README alone')
     args = parser.parse_args()
     revision = subprocess.check_output(['git', 'rev-parse', '--verify', args.revision + '^{commit}'], cwd=ROOT, text=True).strip()
     blobs = GitBlobs()
@@ -242,6 +256,10 @@ def main():
         rows, current = history(revision, blobs, args.pending_date)
     finally:
         blobs.close()
+    if args.rows_out:
+        dump_rows(rows, args.rows_out)
+        print(f'Wrote {len(rows)} days of history rows.')
+        return
     (ROOT / 'docs/model-trend.svg').write_text(render(rows))
     (ROOT / 'docs/progress-trend.svg').write_text(render_cumulative(rows))
     path = ROOT / 'README.md'
