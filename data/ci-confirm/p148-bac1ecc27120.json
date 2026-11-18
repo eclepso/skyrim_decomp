@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "7d9f652791e1a84effa29216a334fc8e371d5728",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/bsengine/BSPathingCell.cpp": "c7ef3969d81adfcfb25068041213c870046edb01b63f3402743f447d7e65bdcd",
+    "reconstruction/bsengine/BSPathingCell.h": "94c2c624398013ef9c826e579847e6b5bebb3b3dc41933166b7201e19a7d55bc"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr177-7c316955-0-squash",
+      "unit": "reconstruction/bsengine/BSPathingCell.cpp",
+      "closure": [
+        "reconstruction/bsengine/BSPathingCell.cpp",
+        "reconstruction/bsengine/BSPathingCell.h"
+      ],
+      "source_sha256": "c07e47061077308462d348ec667f3540c0598922efc6896d087197e926444f19",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 5113952,
+          "size": 43,
+          "symbol": "??_GBSPathingCell@@UEAAPEAXI@Z"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "22dbb81937ee48de27c34a0dd70207ef96d87c5860a9eb0264665ac5f42a7781",
+      "first_content_sha256": "5c7c1ca391f3d30f8fac0ec8b5e754179bd5652c8d894e873cda2397becd4d28"
+    }
+  ]
+}
