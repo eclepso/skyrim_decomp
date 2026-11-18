@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "base_sha": "eff3c833615b288c93eed6e6766ca1906904e512",
+  "build_id": "sse-steam-1-7-104",
+  "files": {
+    "reconstruction/fo4b4b_155380/SpellItem.cpp": "237cb3c55fbff0965842c644e0ce33c39a155784a7331d8de3299688740317c6",
+    "reconstruction/fo4b4b_155380/SpellItem.h": "3648bc87d688851360c1f731520f071d8528f975da39b073e23405f9dc7196b8"
+  },
+  "units": [
+    {
+      "task_id": "contrib-pr123-1f44ecac-0-squash-154cf0",
+      "unit": "reconstruction/fo4b4b_155380/SpellItem.cpp",
+      "closure": [
+        "reconstruction/fo4b4b_155380/SpellItem.cpp",
+        "reconstruction/fo4b4b_155380/SpellItem.h"
+      ],
+      "source_sha256": "466d2494e1e9be26e43572fb80ec15feb530f1cdda9bf39d8bc957d92aad6d3b",
+      "recipe": "reconstruction/recipes/msvc-19.16.27054-o2.json",
+      "recipe_sha256": "923a7ef7ea6d9792a66669014f059f40af29e111b065f2ae6b0a6835d7f4e838",
+      "functions": [
+        {
+          "rva": 1395952,
+          "size": 8,
+          "symbol": "?GetData2@SpellItem@@UEAAPEAUSpellItemData@@XZ"
+        }
+      ],
+      "first_host": {
+        "host_id": "mac-wine",
+        "machine": "maintainer-mac",
+        "loader": "wine",
+        "os": "macos"
+      },
+      "first_object_sha256": "8272f471ea75686ca1a3a4d15571614a6e4cc8ba3d4a41896e950bdcd7262f0e",
+      "first_content_sha256": "05fc99d9b5f8b88cbb6fc811d17265856ca01e179c919fdbe746f7bf76cde39c"
+    }
+  ]
+}

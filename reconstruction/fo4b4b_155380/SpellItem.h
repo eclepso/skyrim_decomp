@@ -32,6 +32,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+// SpellItem::GetDelivery, GetFixedCastDuration, IgnoresResistance, GetData2: COMMUNITY(CharmedBaryon/CommonLibSSE-NG@b93280e832f263dbef44e44cbe2936622a02f91a, MIT); names only, the bodies are written from the target listing
+// SpellItemData, unk08, data: STANDIN GUESS(low); the record at 0xC0 and only the members the compared code reads
+// GetData2: virtual slot unknown, declared after the known slots
 #pragma once
 #include <cstdint>
 class TESFile; class BGSSaveFormBuffer; class BGSLoadFormBuffer; class TESObjectREFR; class BSFixedString; struct FORM; struct FORM_GROUP; class TESBoundObject; class TESWaterForm; class NiAVObject; class BGSVoiceType; class BSString; class Actor;
@@ -151,4 +154,21 @@ virtual void                                   LoadMagicItemChunk(TESFile* a_mod
 virtual void                                   LoadChunkDataPostProcess(TESFile* a_mod);
 virtual const Data*              GetData1() const = 0;
 };
-class SpellItem : public MagicItem { public: bool IgnoreLOS() const override; bool GetNoAbsorb() const override; bool GetNoDualCastModifications() const override; };
+struct SpellItemData {
+    std::int32_t costOverride;  // 00
+    std::uint32_t flags;        // 04
+    std::int32_t spellType;     // 08
+    float chargeTime;           // 0C
+    std::int32_t castingType;   // 10
+    std::int32_t delivery;      // 14
+    float castDuration;         // 18
+};
+class SpellItem : public MagicItem { public:
+    bool IgnoreLOS() const override; bool GetNoAbsorb() const override; bool GetNoDualCastModifications() const override;
+    MagicSystem::Delivery GetDelivery() const override;
+    float GetFixedCastDuration() const override;
+    bool IgnoresResistance() const override;
+    virtual SpellItemData* GetData2();
+    std::uint8_t unk08[0xB8];  // 08
+    SpellItemData data;        // C0
+};
