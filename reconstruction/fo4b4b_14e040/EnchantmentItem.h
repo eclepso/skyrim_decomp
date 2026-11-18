@@ -10,6 +10,7 @@
 // Sibling source: fo4-private@1b765c70 src/Shared/Magic/EnchantmentItem.cpp:99
 // EnchantmentItem, MagicItem: COMMUNITY(CharmedBaryon/CommonLibSSE-NG@b93280e832f263dbef44e44cbe2936622a02f91a, MIT); declarations adapted from include/RE/E/EnchantmentItem.h, include/RE/M/MagicItem.h, include/RE/T/TESBoundObject.h, include/RE/T/TESForm.h, include/RE/T/TESFullName.h and include/RE/B/BGSKeywordForm.h.
 // names: GUESS(low); names and original signatures are tentative.
+// EnchantmentItem::GetCastingType, EnchantmentItem::GetDelivery, EnchantmentItem::GetSpellType, EnchantmentItem::GetData2: COMMUNITY(CharmedBaryon/CommonLibSSE-NG@b93280e832f263dbef44e44cbe2936622a02f91a, MIT); signatures adapted (enum returns shown as int)
 // MIT License
 // 
 // Copyright (c) 2018 Ryan-rsm-McKenzie
@@ -44,4 +45,5 @@ class TESFile;
 class EnchantmentItem : public MagicItem { public:
  struct Data { int costOverride; unsigned flags; int castingType, chargeOverride, delivery, spellType; float chargeTime; unsigned pad; EnchantmentItem* baseEnchantment; void* wornRestrictions; void InitFromChunk(TESFile*); } data;
  void SetCastingType(int); void InitFromChunk(TESFile*);
+ virtual int GetCastingType() const; virtual int GetDelivery() const; virtual int GetSpellType() const; virtual Data* GetData2();
 };
